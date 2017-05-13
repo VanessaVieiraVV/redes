@@ -53,10 +53,14 @@ def main():
                     game.showBoard()
                     print ('Jogador X ganhou')
                     break
+
                 game.jogador = '0'
-
-
                 game.showBoard()
+
+                if game.jogadas_disponiveis  == 0:
+                    print("Deu velha")
+                    break
+
                 position = input("\nDIGITE UMA POSIÇÃO PARA JOGAR (1-9): ")
                 if not game.jogada(position):
                     while not game.jogada(position):
