@@ -1,3 +1,6 @@
+import threading
+import socket
+
 class Game():
     def __init__(self):
         self.board = [
@@ -68,43 +71,35 @@ class Game():
 
         return ganhou
 
+class Game_client():
+    def __init__(self):
+        self.host = '127.0.0.1'
+        self.port = 0
+        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.dest = (self.host, self.port)
+
+    def send_msg(self, msg):
+        self.dest = (self.host, self.port)
+        self.udp.sendto (msg.encode('utf-8'), self.dest)
+
+    def close_connection(self):
+        self.udp.close()
 
 
-    def jogo(self):
+class Game_server():
+    def __init__(self):
+        self.host = ''              # Endereco IP do Servidor
+        self.port = 1           # Porta que o Servidor esta
+        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.orig = (self.host, self.port)
+
+    def listen(self):
+        self.orig = (self.host, self.port)
         while True:
-            if self.jogadas_disponiveis > 0:
-                self.showBoard()
-                self.jogador = 'X'
-                position = input("\nDIGITE UMA POSIÇÃO PARA JOGAR (1-9): ")
-                if not self.__jogada(position):
-                    while not self.__jogada(position):
-                        position = input("Posição já ocupada ")
+            msg, cliente = self.udp.recvfrom(1024)
+            if msg: break
 
-                self.jogadas1.append(position)
-                if self.ganhar(self.jogador):
-                    self.showBoard()
-                    print ('Jogador X ganhou')
-                    break
+        return msg.decode('utf-8')
 
-
-            if self.jogadas_disponiveis > 0:
-                self.showBoard()
-                self.jogador = '0'
-                position = input("\nDIGITE UMA POSIÇÃO PARA JOGAR (1-9): ")
-                if not self.__jogada(position):
-                    while not self.__jogada(position):
-                        position = input("Posição já ocupada\n")
-
-                self.jogadas2.append(position)
-                if self.ganhar(self.jogador):
-                    self.showBoard()
-                    print('Jogador 0 ganhou')
-                    break
-
-            if self.jogadas_disponiveis == 0:
-                print("Deu velha")
-                break
-
-
-#jogo = Game()
-#jogo.jogo()
+    def close_connection(self):
+        self.udp.close()

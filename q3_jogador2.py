@@ -1,48 +1,20 @@
 import socket
 import threading
-from q3_jogo import Game
-
-class Game_client(threading.Thread):
-    def __init__(self):
-        self.host = '127.0.0.1'
-        self.port = 6061
-        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.dest = (self.host, self.port)
-
-    def send_msg(self, msg):
-        self.udp.sendto (msg.encode('utf-8'), self.dest)
-
-    def close_connection(self):
-        self.udp.close()
-
-
-class Game_server(threading.Thread):
-    def __init__(self):
-        self.host = ''              # Endereco IP do Servidor
-        self.port = 6060           # Porta que o Servidor esta
-        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.orig = (self.host, self.port)
-
-    def listen(self):
-        while True:
-            msg, cliente = self.udp.recvfrom(1024)
-            if msg: break
-
-        return msg.decode('utf-8')
-
-    def close_connection(self):
-        self.udp.close()
+from q3_jogo import Game, Game_client, Game_server
 
 def main():
     game = Game()
     cliente = Game_client()
     servidor = Game_server()
     game.jogador = '0'
+    servidor.port = 5001
+    cliente.port = 5000
 
     while True:
         if game.jogadas_disponiveis > 0:
             if game.jogador == '0':
                 if game.jogadas_disponiveis == 9:
+                    servidor.orig = (servidor.host, servidor.port)
                     servidor.udp.bind(servidor.orig)
                 position_ant = servidor.listen()
                 game.jogador = 'X'
@@ -77,5 +49,8 @@ def main():
         if game.jogadas_disponiveis == 0:
             print("Deu velha")
             break
+
+    cliente.close_connection()
+    servidor.close_connection()
 
 main()
