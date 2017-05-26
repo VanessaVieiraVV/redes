@@ -8,8 +8,8 @@ def get_protocol(arq):
 
 def echo(protocolo):
     if protocolo == "UDP\n":
-        HOST = ''              # Endereco IP do Servidor
-        PORT = 5001           # Porta que o Servidor esta
+        HOST = ''
+        PORT = 5001
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         orig = (HOST, PORT)
         udp.bind(orig)
@@ -23,8 +23,8 @@ def echo(protocolo):
         udp.close()
 
     elif protocolo == "TCP\n":
-        HOST = ''              # Endereco IP do Servidor
-        PORT = 5001            # Porta que o Servidor esta
+        HOST = ''
+        PORT = 5001
         tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         orig = (HOST, PORT)
         tcp.bind(orig)

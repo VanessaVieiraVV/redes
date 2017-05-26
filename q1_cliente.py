@@ -8,8 +8,8 @@ def get_protocol(arq):
 
 def echo(protocolo):
     if protocolo == "UDP\n":
-        HOST = '127.0.0.1'  # Endereco IP do Servidor
-        PORT = 5001           # Porta que o Servidor esta
+        HOST = '127.0.0.1'
+        PORT = 5001
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         dest = (HOST, PORT)
         print ('Para sair use CTRL+X\n')
@@ -27,8 +27,8 @@ def echo(protocolo):
 
 
     if protocolo == "TCP\n":
-        HOST = '127.0.0.1'     # Endereco IP do Servidor
-        PORT = 5001            # Porta que o Servidor esta
+        HOST = '127.0.0.1'
+        PORT = 5001
         tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         dest = (HOST, PORT)
         tcp.connect(dest)

@@ -88,8 +88,8 @@ class Game_client():
 
 class Game_server():
     def __init__(self):
-        self.host = ''              # Endereco IP do Servidor
-        self.port = 1           # Porta que o Servidor esta
+        self.host = ''
+        self.port = 1
         self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.orig = (self.host, self.port)
 
