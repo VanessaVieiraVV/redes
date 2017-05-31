@@ -1,12 +1,9 @@
 import socket
 
-def send_arq(arq, s):
+def send_arq(arq, tcp):
     while True:
-        conn, addr = s.accept()
+        conn, addr = tcp.accept()
         print ('Got connection from', addr)
-        data = conn.recv(1024)
-        print ('Server received', repr(data))
-
 
         f = open(arq,'rb')
         l = f.read(1024)
@@ -16,8 +13,7 @@ def send_arq(arq, s):
            l = f.read(1024)
         f.close()
 
-        print ('Done sending')
-        conn.send('Thank you for connecting'.encode('utf-8'))
+        print ('Arquivo enviado')
         conn.close()
 
 def main():

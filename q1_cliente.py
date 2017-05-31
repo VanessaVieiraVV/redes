@@ -50,4 +50,5 @@ def main():
     print ("protocolo:", protocol)
     echo(protocol)
 
-main()
+if __name__ == '__main__':
+    main()

@@ -65,4 +65,5 @@ def main():
     cliente.close_connection()
     servidor.close_connection()
 
-main()
+if __name__ == '__main__':
+    main()

@@ -1,18 +1,17 @@
 import socket
 
-def recebe_arq(arq, s):
+def recebe_arq(arq, tcp):
     with open(arq, 'wb') as f:
-        print ('file opened')
         while True:
             print ('receiving data...')
-            data = s.recv(1024)
+            data = tcp.recv(1024)
             print('data=%s', (data))
             if not data:
                 break
             f.write(data)
 
     f.close()
-    print('Successfully get the file')
+    print('Download concluido')
 
 
 def main():
@@ -21,7 +20,6 @@ def main():
     port = 5000
 
     tcp.connect((host, port))
-    tcp.send("Hello server!".encode('utf-8'))
 
     arq = 'q2_download/received_file'
     recebe_arq(arq, tcp)
