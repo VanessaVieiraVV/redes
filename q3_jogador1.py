@@ -1,13 +1,14 @@
 import socket
-import threading
-from q3_jogo import Game, Game_client, Game_server
+from q3_jogo import Game, Game_client, Game_server, Connection
 
 def main():
     game = Game()
     cliente = Game_client()
     servidor = Game_server()
-    servidor.port = 5000
-    cliente.port = 5001
+    con = Connection()
+    peer = con.get_peer()
+    servidor.port = peer['rec_port']
+    cliente.port = peer['port']
 
     while True:
         if game.jogadas_disponiveis > 0:
@@ -21,6 +22,7 @@ def main():
 
                     game.jogadas1.append(position)
                     cliente.send_msg(position)
+                    game.showBoard()
                     if game.ganhar(game.jogador):
                         game.showBoard()
                         print ('Jogador X ganhou')

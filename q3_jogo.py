@@ -1,4 +1,4 @@
-import threading
+import json
 import socket
 
 class Game():
@@ -103,3 +103,30 @@ class Game_server():
 
     def close_connection(self):
         self.udp.close()
+
+
+class Connection():
+    def __init__(self):
+        self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.host = '127.0.0.1'
+        self.port = 6007
+
+    def __send_hello(self):
+        msg = 'Hello'
+        dest = (self.host, self.port)
+        self.udp.sendto(msg.encode('utf-8'), dest)
+
+    def get_peer(self):
+        resp = ''
+        print ('waiting for connection...')
+        self.__send_hello()
+        while True:
+            resp, server = self.udp.recvfrom(1024)
+            print (resp.decode('utf-8'))
+            if resp.decode('utf-8').startswith('{'):
+                break
+
+        peer = resp.decode('utf-8')
+        jpeer = json.loads(peer)
+
+        return jpeer
