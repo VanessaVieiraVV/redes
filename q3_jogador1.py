@@ -9,6 +9,7 @@ def main():
     peer = con.get_peer()
     servidor.port = peer['rec_port']
     cliente.port = peer['port']
+    cliente.host = peer['ip']
 
     while True:
         if game.jogadas_disponiveis > 0:
