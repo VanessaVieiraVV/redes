@@ -1,0 +1,1 @@
+{"mateus": {"pastas": ["pasta01"], "password": "123"}, "user": {"pastas": ["pasta02"], "password": "456"}, "usuario": {"pastas": ["pasta02"], "password": "senha"}}
