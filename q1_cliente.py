@@ -1,4 +1,5 @@
 import socket
+import http.client, urllib.parse, json
 
 def get_protocol(arq):
     f = open(arq, "r")
@@ -9,7 +10,7 @@ def get_protocol(arq):
 def echo(protocolo):
     if protocolo == "UDP\n":
         HOST = '127.0.0.1'
-        PORT = 5001
+        PORT = 5000
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         dest = (HOST, PORT)
         print ('Para sair use CTRL+X\n')
@@ -26,7 +27,7 @@ def echo(protocolo):
         udp.close()
 
 
-    if protocolo == "TCP\n":
+    elif protocolo == "TCP\n":
         HOST = '127.0.0.1'
         PORT = 5001
         tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,6 +45,24 @@ def echo(protocolo):
             msg = input()
 
         tcp.close()
+
+    elif protocolo == 'HTTP\n':
+        print ('Para sair use CTRL+X\n')
+        msg = input()
+
+        while msg != '\x18':
+
+            params = json.dumps({'msg': msg})
+            headers = {"Content-type": "application/x-www-form-urlencoded",
+            "Accept": "text/plain"}
+            conn = http.client.HTTPConnection("127.0.0.1", 8000)
+            conn.request("POST", "", params, headers)
+            response = conn.getresponse()
+            print(response.status, response.reason)
+
+            data = response.read()
+            print (data.decode())
+            msg = input()
 
 def main():
     protocol = get_protocol('q1_protocolo.txt')
