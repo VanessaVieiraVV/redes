@@ -3,7 +3,7 @@ import json
 import os
 from q2_functions import *
 import time
-
+from _thread import start_new_thread
 
 data_file = 'json.txt'
 dir_pastas = 'q2_pastas'
@@ -105,22 +105,34 @@ def do_download(con, user):
 
     else: con.send('NO'.encode('utf-8'))
 
-def main():
-    logged = False
-    user = ''
+def get_userinfo(con, user):
+    con.send('OK'.encode('utf-8'))
 
-    port = 5001
-    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = socket.gethostname()
-    tcp.bind((host, port))
-    tcp.listen(5)
-    print ('Server listening....')
+    arquivos = list()
+
+    pastas = get_pastas(data_file, user)
+    for pasta in pastas:
+        diretorio = dir_pastas + '/' + pasta
+        arquivos += [os.path.join(pasta, nome)
+        for nome in os.listdir(diretorio)]
+
+    data = dict()
+    data['arquivos'] = arquivos
+    data['pastas'] = pastas
+
+    jinfo = json.dumps(data)
+    time.sleep(0.1)
+
+    con.send(jinfo.encode('utf-8'))
+
+def run_server(con):
 
     while True:
-        con, addr = tcp.accept()
-        print ('Got connection from', addr)
 
-        #con.send('string'.encode('utf-8'))
+        logged = False
+        user = ''
+
+        #con.send('string'.encode('utf-8'))    print ('Server listening....')
 
         while True:
             msg = con.recv(1024)
@@ -158,6 +170,25 @@ def main():
 
             elif msg.decode('utf-8') == 'DISCONNECT':
                 con.close()
+                break
+
+            elif msg.decode('utf-8') == 'INFO':
+                get_userinfo(con, user)
+
+        if msg.decode('utf-8') == 'DISCONNECT':
+            break
+
 
 if __name__ == '__main__':
-    main()
+
+    port = 5006
+    tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = socket.gethostname()
+    tcp.bind((host, port))
+    tcp.listen(5)
+    print ('Server listening....')
+    while True:
+        con, addr = tcp.accept()
+        print ('Got connection from', addr)
+
+        start_new_thread(run_server, (con,))

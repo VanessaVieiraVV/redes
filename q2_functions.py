@@ -70,15 +70,9 @@ def permission(fname, user, nome_pasta):
 
     else: return False
 
-def main():
+def get_pastas(fname, user):
+    data = get_users(fname)
 
-    user = input('user: ')
-    password = input('pass: ')
+    pastas = data[user]['pastas']
 
-    if autentication('json.txt', user, password):
-        print('ok')
-    else:
-        print('no')
-
-if __name__ == '__main__':
-    main()
+    return pastas
