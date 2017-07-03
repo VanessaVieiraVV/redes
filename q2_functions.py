@@ -32,14 +32,20 @@ def get_users(fname):
     return data
 
 def add_user(fname, username, password):
+    success = False
+
     data = get_users(fname)
-    data[username] = {'password' : password, 'pastas' : []}
 
+    if not username in data:
+        data[username] = {'password' : password, 'pastas' : []}
 
-    with open(fname, 'w') as f:
-        json.dump(data, f)
+        with open(fname, 'w') as f:
+            json.dump(data, f)
 
-    f.close()
+        f.close()
+        success = True
+
+    return success
 
 def new_pasta(fname, user, nome_pasta):
     data = get_users(fname)
@@ -76,3 +82,13 @@ def get_pastas(fname, user):
     pastas = data[user]['pastas']
 
     return pastas
+
+def send_arq(arq, con):
+    f = open(arq,'rb')
+    l = f.read(1024)
+    while (l):
+        con.send(l)
+        l = f.read(1024)
+    f.close()
+
+    print ('Arquivo enviado')

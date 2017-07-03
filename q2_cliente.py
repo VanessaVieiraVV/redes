@@ -1,10 +1,26 @@
 import socket
 import json
-from q2_servidor import send_arq
 import time
 from q2_functions import *
 
-def send_user(tcp):
+tuto = '''
+
+    Comandos:
+        LOGIN
+        NEW USER
+        NEW FOLDER *
+        UPLOAD *
+        DOWNLOAD *
+        SHARE *
+        LOGOUT
+        INFO *
+        DISCONNECT
+
+        OS COMANDOS COM * PRECISAM DE LOGIN
+
+'''
+
+def send_user(tcp, new):
     data = dict()
 
     user = input('username: ')
@@ -16,6 +32,19 @@ def send_user(tcp):
     juser = json.dumps(data)
 
     tcp.send(juser.encode('utf-8'))
+
+    if new:
+
+        while True:
+            resp = tcp.recv(1024)
+
+            if resp.decode('utf-8') == 'OK':
+                print ('User created')
+                break
+
+            elif resp.decode('utf-8') == 'NO':
+                print ('Username already used')
+                break
 
 def send_pasta(tcp):
     data = dict()
@@ -52,7 +81,7 @@ def send_arquivo(tcp):
             break
 
         elif conf.decode('utf-8') == 'NO':
-            print ('Access Denied')
+            print ('ERRO')
             break
 
 def get_arquivo(tcp):
@@ -77,7 +106,7 @@ def get_arquivo(tcp):
             break
 
         elif conf.decode('utf-8') == 'NO':
-            print ('Access Denied')
+            print ('ERRO')
             break
 
 def show_info(tcp):
@@ -119,7 +148,7 @@ def send_novo_user(tcp):
             break
 
         elif conf.decode('utf-8') == 'NO':
-            print ('Access Denied')
+            print ('ERRO')
             break
 
 
@@ -129,22 +158,23 @@ def main():
 
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = socket.gethostname()
-    port = 5006
+    port = 5007
 
     tcp.connect((host, port))
 
-    print ('Para sair use CTRL+X\n')
+    print (tuto)
+
     msg = input('DIGITE COMANDO: ')
 
-    while msg != '\x18':
+    while True:
         if msg == 'NEW USER':
             tcp.send(msg.encode('utf-8'))
 
             resp = tcp.recv(1024)
             if resp.decode('utf-8') == 'OK':
-                send_user(tcp)
+                send_user(tcp, True)
                 msg = input('DIGITE COMANDO: ')
-            else: msg = input('DIGITE COMANDO: ')
+
 
         elif msg == 'LOGIN':
             if logged == True:
@@ -156,7 +186,7 @@ def main():
 
                 resp = tcp.recv(1024)
                 if resp.decode('utf-8') == 'OK':
-                    send_user(tcp)
+                    send_user(tcp, False)
                     resposta = tcp.recv(1024)
                     print (resposta.decode('utf-8'))
 
@@ -166,7 +196,7 @@ def main():
 
                     msg = input('DIGITE COMANDO: ')
 
-        elif msg == 'NEW PASTA':
+        elif msg == 'NEW FOLDER':
             tcp.send(msg.encode('utf-8'))
 
             resp = tcp.recv(1024)

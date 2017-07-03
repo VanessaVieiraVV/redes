@@ -19,17 +19,6 @@ def get_jinfo(con):
 
     return jinfo
 
-def send_arq(arq, con):
-    f = open(arq,'rb')
-    l = f.read(1024)
-    while (l):
-        con.send(l)
-        #print('Sent ',repr(l))
-        l = f.read(1024)
-    f.close()
-
-    print ('Arquivo enviado')
-    #con.close()
 
 def new_user(con):
     con.send('OK'.encode('utf-8'))
@@ -128,18 +117,19 @@ def get_userinfo(con, user):
 def run_server(con):
 
     while True:
-
         logged = False
         user = ''
-
-        #con.send('string'.encode('utf-8'))    print ('Server listening....')
 
         while True:
             msg = con.recv(1024)
             print (msg.decode('utf-8'))
 
             if msg.decode('utf-8') == 'NEW USER':
-                new_user(con)
+                if new_user(con):
+                    con.send('OK'.encode('utf-8'))
+
+                else: con.send('NO'.encode('utf-8'))
+
 
             elif msg.decode('utf-8') == 'LOGIN':
                 login_info = user_login(con)
@@ -181,7 +171,7 @@ def run_server(con):
 
 if __name__ == '__main__':
 
-    port = 5006
+    port = 5007
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = socket.gethostname()
     tcp.bind((host, port))
