@@ -1,7 +1,28 @@
 import socket
 from q3_jogo import Game, Game_client, Game_server, Connection
 
+posicoes = '''
+
+      1 | 2 | 3
+    -------------
+      4 | 5 | 6
+    -------------
+      7 | 8 | 9
+
+'''
+
+def valida(posicao):
+    validade = False
+    if posicao.isdigit():
+        if 0 < int(posicao) < 10:
+            validade = True
+
+    return validade
+
+
 def main():
+    print(posicoes)
+
     game = Game()
     cliente = Game_client()
     servidor = Game_server()
@@ -17,6 +38,9 @@ def main():
                 if game.jogadas_disponiveis == 9:
                     game.showBoard()
                     position = input("\nDIGITE UMA POSIÇÃO PARA JOGAR (1-9): ")
+
+                    while not valida(position):
+                        position = input("Posição Inválida ")
                     if not game.jogada(position):
                         while not game.jogada(position):
                             position = input("Posição já ocupada ")
@@ -48,6 +72,9 @@ def main():
 
                     game.showBoard()
                     position = input("\nDIGITE UMA POSIÇÃO PARA JOGAR (1-9): ")
+                    while not valida(position):
+                        position = input("Posição Inválida ")
+
                     if not game.jogada(position):
                         while not game.jogada(position):
                             position = input("Posição já ocupada ")
