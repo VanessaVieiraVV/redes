@@ -12,10 +12,10 @@ class POST_Handler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         data = json.loads(post_body.decode())
-        print(data['msg'])
+
 
         self.wfile.write(data['msg'].encode())
-        return
+        return print(data['msg'])
 
 
 def get_protocol(arq):
